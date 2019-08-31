@@ -1,5 +1,5 @@
-/* Ex. 4-3 (p. 79): Given the basic framework, add the modulus (%)
- * operator and provisions for negative numbers. */
+/* Ex. 4-4 (p. 79): Add commands to print top of stack without popping
+ * it, to duplicate it and to swap the top two elements. */
 
 #include <stdio.h>
 #include <stdlib.h>		/* for atof() */
@@ -10,6 +10,7 @@
 int getop(char[]);
 void push(double);
 double pop(void);
+void print_top(void);
 
 /* reverse Polish calculator */
 int main(void)
@@ -47,6 +48,9 @@ int main(void)
 	       else
 		    printf("error: modulu by zero\n");
 	       break;
+	  case 'p':
+	       print_top();
+	       break;
 	  case '\n':
 	       printf("\t%.8g\n", pop());
 	       break;
@@ -81,6 +85,14 @@ double pop(void)
 	  printf("error: stack empty\n");
 	  return 0.0;
      }
+}
+
+void print_top(void)
+{
+     extern int sp;
+
+     if (sp > 0)
+	  printf("Top of stack is: %g\n" , val[0]);
 }
 
 #include <ctype.h>
