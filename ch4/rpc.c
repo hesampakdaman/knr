@@ -12,6 +12,7 @@ void push(double);
 double pop(void);
 void print_top(void);
 void duplicate_top(void);
+void swap(void);
 
 /* reverse Polish calculator */
 int main(void)
@@ -54,6 +55,9 @@ int main(void)
 	       break;
 	  case 'd':
 	       duplicate_top();
+	       break;
+	  case 's':
+	       swap();
 	       break;
 	  case '\n':
 	       printf("\t%.8g\n", pop());
@@ -114,6 +118,16 @@ void duplicate_top(void)
 	  for (i = 0; i < sp; ++i)
 	       val[i] = dup[i];
      }
+}
+
+void swap(void)
+{
+     extern int sp;
+     extern double val[MAXVAL];
+     double f;
+
+     if (sp > 1)
+	  f = val[0], val[0] = val[1], val[1] = f;
 }
 
 #include <ctype.h>
