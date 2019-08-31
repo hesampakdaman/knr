@@ -11,6 +11,7 @@ int getop(char[]);
 void push(double);
 double pop(void);
 void print_top(void);
+void duplicate_top(void);
 
 /* reverse Polish calculator */
 int main(void)
@@ -50,6 +51,9 @@ int main(void)
 	       break;
 	  case 'p':
 	       print_top();
+	       break;
+	  case 'd':
+	       duplicate_top();
 	       break;
 	  case '\n':
 	       printf("\t%.8g\n", pop());
@@ -93,6 +97,23 @@ void print_top(void)
 
      if (sp > 0)
 	  printf("Top of stack is: %g\n" , val[0]);
+}
+
+void duplicate_top(void)
+{
+     extern int sp;
+     extern double val[MAXVAL];
+     int i;
+     double dup[MAXVAL];
+
+     if (sp > 0) {
+	  dup[0] = dup[1] = val[0];
+	  for (i = 0; i < sp; ++i)
+	       dup[i+2] = val[i];
+	  sp += 1;
+	  for (i = 0; i < sp; ++i)
+	       val[i] = dup[i];
+     }
 }
 
 #include <ctype.h>
