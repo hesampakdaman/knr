@@ -90,7 +90,9 @@ int getop(char s[])
      while ((s[0] = c = getch()) == ' ' || c == '\t')
 	  ;
      s[1] = '\0';
-     if (!isdigit(c) && c != '.')
+     if (!isdigit(c) && c != '.' && c != '-')
+	  return c;
+     else if (c == '-' && sp > 1 && sp % 2 == 0)
 	  return c;
      i = 0;
      if (isdigit(c) || c == '-')
