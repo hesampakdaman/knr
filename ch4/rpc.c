@@ -1,11 +1,14 @@
-/* Ex. 4-4 (p. 79): Add commands to print top of stack without popping
- * it, to duplicate it and to swap the top two elements. */
+/* Ex. 4-5 (p. 79): Add access to math.h library funs like sin, exp
+ * and pow. */
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>		/* for atof() */
+#include <string.h>		/* strcmp */
 
 #define MAXOP	100		/* max size of operand or operator */
 #define NUMBER	'0' 		/* signal that a number was found */
+#define MATH	'1' 		/* use math.h lib */
 
 int getop(char[]);
 void push(double);
@@ -13,6 +16,7 @@ double pop(void);
 void print_top(void);
 void duplicate_top(void);
 void swap(void);
+double math_fn(double, char[]);
 
 /* reverse Polish calculator */
 int main(void)
@@ -58,6 +62,9 @@ int main(void)
 	       break;
 	  case 's':
 	       swap();
+	       break;
+	  case MATH:
+	       push(math_fn(pop(), s));
 	       break;
 	  case '\n':
 	       printf("\t%.8g\n", pop());
@@ -130,6 +137,25 @@ void swap(void)
 	  f = val[0], val[0] = val[1], val[1] = f;
 }
 
+double math_fn(double x, char type[])
+{
+     if (strcmp(type, "sin") == 0)
+	  return sin(x);
+     else if (strcmp(type, "cos") == 0)
+	  return cos(x);
+     else if (strcmp(type, "tan") == 0)
+	  return tan(x);
+     else if (strcmp(type, "exp") == 0)
+	  return exp(x);
+     else if (strcmp(type, "pow") == 0)
+	  return pow(pop(), x);
+     else if (strcmp(type, "sqrt") == 0)
+	  return sqrt(x);
+     else
+	  printf("error: unknown operation %s\n", type);
+     return 0.0;
+}
+
 #include <ctype.h>
 
 int getch(void);
@@ -138,27 +164,39 @@ void ungetch(int);
 /* getop: get next operator numeric operand */
 int getop(char s[])
 {
-     int i, c;
+     int i, c, type;
      extern int sp;
 
      while ((s[0] = c = getch()) == ' ' || c == '\t')
 	  ;
      s[1] = '\0';
-     if (!isdigit(c) && c != '.' && c != '-')
+     if (!isalnum(c) && c != '.' && c != '-')
 	  return c;
      else if (c == '-' && sp > 1 && sp % 2 == 0)
 	  return c;
-     i = 0;
-     if (isdigit(c) || c == '-')
-	  while (isdigit(s[++i] = c = getch()))
+     else if(isalpha(c)) {
+	  i = 0;
+	  while (isalpha(s[++i] = c = getch()))
 	       ;
-     if (c == '.')
-	  while (isdigit(s[++i] = c = getch()))
-	  ;
+	  if (i == 1) {
+	       type = s[0];
+	  }
+	  else
+	       type = MATH;
+     } else if (isdigit(c)){
+	  type = NUMBER;
+	  i = 0;
+	  if (isdigit(c) || c == '-')
+	       while (isdigit(s[++i] = c = getch()))
+		    ;
+	  if (c == '.')
+	       while (isdigit(s[++i] = c = getch()))
+		    ;
+     }
      s[i] = '\0';
      if (c != EOF)
 	  ungetch(c);
-     return NUMBER;
+     return type;
 }
 
 #define BUFSIZE 100
